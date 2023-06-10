@@ -1,11 +1,10 @@
 /*
- Project Title: SlitScan vodeo cam
+ Project Title: SlitScan video cam
  Description: using oF video grabber to sample camera input then accessing pixels in each frame from the camera to create a
- slitscan video.
- each minute we grab the screen to create thumbnail images for the past hour and eacch hour we grab a thumbnail to show images for the last 24 hrs
+ slitscan video camera. Using facetracking to make a time distortion centred on identified faces.
  
  
- ©Daniel Buzzo 2020, 21, 22, 23
+ ©Daniel Buzzo 22, 23
  dan@buzzo.com
  http://buzzo.com
  https://github.com/danbz
@@ -29,18 +28,18 @@ void ofApp::setup(){
     //    camWidth= 1280;
     
     float aspectRatio = camHeight / camWidth;
-    
+
     sWidth = ofGetWidth();
     sHeight = ofGetHeight();
     
     xSteps = ySteps = 0;
-    maxFrames = 120;
+    maxFrames = 180;
     numFrames = 60;
     speed = 1;
     scanStyle = 5; // start as push videopush  style
     scanName = "horizontal ribbon";
     b_radial = b_smooth = b_timeDirection = false;
-    b_drawCam = false;
+    b_drawCam = true; // draw debug on screen
     // load a custom truetype font as outline shapes to blend over video layer
     // font.load("LiberationMono-Regular.ttf", 100, true, true, true);
     font.load("m48.TTF", 100, true, true, true);
@@ -254,14 +253,14 @@ void ofApp::draw(){
             ofPopMatrix();
         }
     } else if (scanStyle == 6) { // straight slices
-        layeredFBO.draw(0,0,sWidth, sHeight);
+        layeredFBO.draw( 0, 0, sWidth, sHeight );
     } else {
-        videoTexture.draw( 0, 0, sWidth, sHeight); // draw the seconds slitscan video texture we have constructed
+        videoTexture.draw( 0, 0, sWidth, sHeight ); // draw the seconds slitscan video texture we have constructed
     }
     
     if (b_drawCam){ // draw camera debug to screen
         vidGrabber.draw(sWidth-camWidth/4 -10, sHeight-camHeight/4 -10, camWidth/4, camHeight/4); // draw our plain image
-        ofDrawBitmapString(" scanning " + scanName + " , 1-scan horiz 2-scan vert 3-ribbon horiz 4-ribbon vert 5-live video, r-radial, c-camview, FPS:" + ofToString(ofGetFrameRate()) + "numFrames: " + ofToString(numFrames) , 10, sHeight -10);
+        ofDrawBitmapString(" scanning " + scanName + " , 1-scan horiz 2-scan vert 3-ribbon horiz 4-ribbon vert 5-live video, 6-time tunnel, r-radial, c-camview, FPS:" + ofToString(ofGetFrameRate()) + "numFrames: " + ofToString(numFrames) , 10, sHeight -10);
         
         // Draw tracker landmarks
         tracker.drawDebug(0,0,sWidth, sHeight);
